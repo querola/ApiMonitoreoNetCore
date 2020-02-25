@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -22,27 +22,58 @@ namespace monitoreoApiNetCore.Controllers
         }
 
         [HttpGet]
-        public ActionResult<HistorialPlaza> GetHistorialIrapuato()
+        public ActionResult<IEnumerable<HistorialPlaza>> GetHistorialIrapuato()
         {
-            try{
-                foreach (IConfigurationSection datosPlaza in configuration.GetSection("ConnectionStrings:Mex-Ira").GetChildren())
-                {
-                    var ip = configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value;
-                    var listas = configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasSQlConnection").Value;
-                    var service = configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value;
-                    if(new Ping().Send(ip, 1000).Status == IPStatus.Success){
-                        var optionsBuilder = new DbContextOptionsBuilder<HistorialDbContext>();
-                        optionsBuilder.UseSqlServer(listas);
-                        using(var listasContext = new HistorialDbContext(optionsBuilder.Options)){
-                            var historial = listasContext.Historial.FirstOrDefault();
-                        }
+            var historialPlazas = new List<HistorialPlaza>();
+            foreach (IConfigurationSection datosPlaza in configuration.GetSection("ConnectionStrings:Mex-Ira").GetChildren())
+            {
+                if(new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, 1000).Status == IPStatus.Success){
+                    var registrosPlaza = new HistorialPlaza();
+                    FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value);
 
+                    using (var listasContext = new HistorialDbContext(new DbContextOptionsBuilder<HistorialDbContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasSQlConnection").Value).Options)){
+                        var historial = listasContext.Historial.FirstOrDefault();
+                        registrosPlaza.Caseta = datosPlaza.Value;
+                        registrosPlaza.ListaSql = historial.Nombre;
+                        registrosPlaza.Extension = ultimaLista.Extension;
+                        registrosPlaza.ListaServidor = ultimaLista.Name;
+                        registrosPlaza.PesoLista = ultimaLista.Length.ToString();
                     }
-                    else{
+                    using(var webServiceContext = new pn_importacion_wsIndraContext(new DbContextOptionsBuilder<pn_importacion_wsIndraContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value).Options)){
+                        var historial = webServiceContext.pn_importacion_wsIndra.FirstOrDefault();
+                        registrosPlaza.WebService = historial.FechaExt;
                     }
+                    historialPlazas.Add(registrosPlaza);
                 }
+                else
+                {
+                    historialPlazas.Add(new HistorialPlaza{
+                        Caseta = configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value,
+                        ListaSql = null,
+                        Extension = null,
+                        ListaServidor = null,
+                        PesoLista = null,
+                        WebService = null
+                    });    
+                }
+            }
+            return historialPlazas;
+        }
+
+        public FileInfo GetFileInfo(string ip)
+        {   
+            FileInfo file;
+            if(Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*").Length != 0){
                 
-            }catch(Exception ex){ return new string[] { "Haz una solicitud" };}
+                foreach (var item in Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*"))
+                {
+                    file = new FileInfo(item);
+                }
+                return new FileInfo(Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*").FirstOrDefault());
+            }
+                //return new FileInfo(Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*").FirstOrDefault());
+            else
+                return null;
         }
     }
 }

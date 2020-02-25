@@ -1,12 +1,14 @@
+using System;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using monitoreoApiNetCore.Entities;
 
 namespace monitoreoApiNetCore.Contexts
 {
-    public class PnlImportacionWsIndraContext : DbContext
+    public class pn_importacion_wsIndraContext : DbContext
     {
-        public PnlImportacionWsIndraContext(DbContextOptions<HistorialDbContext> options) : base(options) {}
+        public pn_importacion_wsIndraContext(DbContextOptions<pn_importacion_wsIndraContext> options) : base(options) {}
         
-        public DbSet<PnImportacionWsIndra> PnlImportacionWsIndra { get; set; }        
+        public DbSet<pn_importacion_wsIndra> pn_importacion_wsIndra { get; set; }        
     }
 }
