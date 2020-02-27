@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\monitoreoApiNetCore.csproj": {}
+    "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\monitoreoApiNetCore.csproj": {
+    "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\monitoreoApiNetCore.csproj",
+        "projectUniqueName": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj",
         "projectName": "monitoreoApiNetCore",
-        "projectPath": "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\monitoreoApiNetCore.csproj",
+        "projectPath": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj",
         "packagesPath": "C:\\Users\\axelf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\obj\\",
+        "outputPath": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -46,6 +46,10 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[3.1.2, )"
+            },
+            "SimpleImpersonation": {
+              "target": "Package",
+              "version": "(, )"
             }
           },
           "imports": [

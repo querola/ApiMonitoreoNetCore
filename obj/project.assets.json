@@ -359,6 +359,18 @@
           }
         }
       },
+      "SimpleImpersonation/3.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Security.Principal.Windows": "4.5.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/SimpleImpersonation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/SimpleImpersonation.dll": {}
+        }
+      },
       "System.Collections/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -1021,7 +1033,7 @@
           "Microsoft.NETCore.Platforms": "2.0.0"
         },
         "compile": {
-          "ref/netstandard2.0/_._": {}
+          "ref/netstandard2.0/System.Security.Principal.Windows.dll": {}
         },
         "runtime": {
           "lib/netstandard2.0/System.Security.Principal.Windows.dll": {}
@@ -1845,6 +1857,29 @@
         "runtimes/win-x86/native/sni.dll",
         "useSharedDesignerContext.txt",
         "version.txt"
+      ]
+    },
+    "SimpleImpersonation/3.0.0": {
+      "sha512": "TwJEeTjxem9irerfcUJ095UUvbC+iMYsIMKRiO7CpeHqnejJWeMtuG6hIn8puksTyix3TmDQrVqSomlL26k+2g==",
+      "type": "package",
+      "path": "simpleimpersonation/3.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net20/SimpleImpersonation.dll",
+        "lib/net20/SimpleImpersonation.xml",
+        "lib/net35/SimpleImpersonation.dll",
+        "lib/net35/SimpleImpersonation.xml",
+        "lib/net40/SimpleImpersonation.dll",
+        "lib/net40/SimpleImpersonation.xml",
+        "lib/net45/SimpleImpersonation.dll",
+        "lib/net45/SimpleImpersonation.xml",
+        "lib/net46/SimpleImpersonation.dll",
+        "lib/net46/SimpleImpersonation.xml",
+        "lib/netstandard2.0/SimpleImpersonation.dll",
+        "lib/netstandard2.0/SimpleImpersonation.xml",
+        "simpleimpersonation.3.0.0.nupkg.sha512",
+        "simpleimpersonation.nuspec"
       ]
     },
     "System.Collections/4.3.0": {
@@ -4871,7 +4906,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.2"
+      "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.2",
+      "SimpleImpersonation"
     ]
   },
   "packageFolders": {
@@ -4882,11 +4918,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\monitoreoApiNetCore.csproj",
+      "projectUniqueName": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj",
       "projectName": "monitoreoApiNetCore",
-      "projectPath": "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\monitoreoApiNetCore.csproj",
+      "projectPath": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj",
       "packagesPath": "C:\\Users\\axelf\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\axelf\\Documents\\Proyectos\\monitoreoApiNetCore\\obj\\",
+      "outputPath": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -4921,6 +4957,10 @@
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[3.1.2, )"
+          },
+          "SimpleImpersonation": {
+            "target": "Package",
+            "version": "(, )"
           }
         },
         "imports": [

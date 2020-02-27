@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using monitoreoApiNetCore.Contexts;
 using monitoreoApiNetCore.Entities;
+using SimpleImpersonation;
 
 namespace monitoreoApiNetCore.Controllers
 {
@@ -29,7 +30,7 @@ namespace monitoreoApiNetCore.Controllers
             {
                 if(new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, 1000).Status == IPStatus.Success){
                     var registrosPlaza = new HistorialPlaza();
-                    FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value);
+                    FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, true);
 
                     using (var listasContext = new HistorialDbContext(new DbContextOptionsBuilder<HistorialDbContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasSQlConnection").Value).Options)){
                         var historial = listasContext.Historial.FirstOrDefault();
@@ -60,20 +61,25 @@ namespace monitoreoApiNetCore.Controllers
             return historialPlazas;
         }
 
-        public FileInfo GetFileInfo(string ip)
+        public FileInfo GetFileInfo(string ip, bool p)
         {   
-            FileInfo file;
-            if(Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*").Length != 0){
-                
-                foreach (var item in Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*"))
-                {
-                    file = new FileInfo(item);
-                }
-                return new FileInfo(Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*").FirstOrDefault());
+            if(System.Diagnostics.Debugger.IsAttached)
+                return RunAsUser(new UserCredentials("WORKGROUP", "admin", "admin"), $@"\\{ip}\geaint\PARAM\ACTUEL");
+            else{
+                //if p = true se usa credenciales Irapuato
+                var credentials = (p) ? new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1") : new UserCredentials("WORKGROUP", "admin", "admin");
+                return RunAsUser(credentials, $@"\\{ip}\geaint\PARAM\ACTUEL");
             }
-                //return new FileInfo(Directory.GetFiles($@"\\{ip}\geaint\PARAM\ACTUEL", "LSTABINT*").FirstOrDefault());
-            else
-                return null;
+        }
+
+        private FileInfo RunAsUser(UserCredentials credentials, string directory)
+        {
+            FileInfo fileInfo = null;
+            Impersonation.RunAsUser(credentials, LogonType.Interactive, () => {
+                if(Directory.GetFiles(directory, "LSTABINT*").Length != 0)
+                    fileInfo = new FileInfo(Directory.GetFiles(directory, "LSTABINT*").FirstOrDefault());
+            });
+            return fileInfo;
         }
     }
 }
