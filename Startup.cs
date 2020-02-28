@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using monitoreoApiNetCore.Contexts;
+using monitoreoApiNetCore.Controllers;
+using monitoreoApiNetCore.Interfaces;
 
 namespace monitoreoApiNetCore
 {
@@ -27,6 +29,7 @@ namespace monitoreoApiNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {            
+            services.AddTransient<ILog, HistorialPlazaController>();
             services.AddControllers();
         }
 
