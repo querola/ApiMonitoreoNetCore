@@ -27,40 +27,45 @@ namespace monitoreoApiNetCore.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<HistorialPlaza>> GetHistorialIrapuato()
         {
-            var historialPlazas = new List<HistorialPlaza>();
-            foreach (IConfigurationSection datosPlaza in configuration.GetSection("ConnectionStrings:Mex-Ira").GetChildren())
-            {
-                if(new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, 1000).Status == IPStatus.Success){
-                    var registrosPlaza = new HistorialPlaza();
-                    FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, true);
-
-                    using (var listasContext = new HistorialDbContext(new DbContextOptionsBuilder<HistorialDbContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasSQlConnection").Value).Options)){
-                        var historial = listasContext.Historial.FirstOrDefault();
-                        registrosPlaza.Caseta = datosPlaza.Key;
-                        registrosPlaza.ListaSql = historial.Nombre;
-                        registrosPlaza.Extension = ultimaLista.Extension;
-                        registrosPlaza.ListaServidor = ultimaLista.Name;
-                        registrosPlaza.PesoLista = ultimaLista.Length.ToString();
-                    }
-                    using(var webServiceContext = new pn_importacion_wsIndraContext(new DbContextOptionsBuilder<pn_importacion_wsIndraContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value).Options)){
-                        var historial = webServiceContext.pn_importacion_wsIndra.FirstOrDefault();
-                        registrosPlaza.WebService = historial.FechaExt;
-                    }
-                    historialPlazas.Add(registrosPlaza);
-                }
-                else
+            try{
+                WriteLog("hola", @"C:\temporal\prueba.txt");
+                var historialPlazas = new List<HistorialPlaza>();
+                foreach (IConfigurationSection datosPlaza in configuration.GetSection("ConnectionStrings:Mex-Ira").GetChildren())
                 {
-                    historialPlazas.Add(new HistorialPlaza{
-                        Caseta = configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value,
-                        ListaSql = null,
-                        Extension = null,
-                        ListaServidor = null,
-                        PesoLista = null,
-                        WebService = null
-                    });    
+                    WriteLog(datosPlaza.Key, @"C:\temporal\prueba.txt");
+                    if(new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, 1000).Status == IPStatus.Success){
+                        var registrosPlaza = new HistorialPlaza();
+                        FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("Ip").Value, true);
+
+                        using (var listasContext = new HistorialDbContext(new DbContextOptionsBuilder<HistorialDbContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasSQlConnection").Value).Options)){
+                            var historial = listasContext.Historial.FirstOrDefault();
+                            registrosPlaza.Caseta = datosPlaza.Key;
+                            registrosPlaza.ListaSql = historial.Nombre;
+                            registrosPlaza.Extension = ultimaLista.Extension;
+                            registrosPlaza.ListaServidor = ultimaLista.Name;
+                            registrosPlaza.PesoLista = ultimaLista.Length.ToString();
+                        }
+                        using(var webServiceContext = new pn_importacion_wsIndraContext(new DbContextOptionsBuilder<pn_importacion_wsIndraContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value).Options)){
+                            var historial = webServiceContext.pn_importacion_wsIndra.FirstOrDefault();
+                            registrosPlaza.WebService = historial.FechaExt;
+                        }
+                        historialPlazas.Add(registrosPlaza);
+                    }
+                    else
+                    {
+                        historialPlazas.Add(new HistorialPlaza{
+                            Caseta = configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value,
+                            ListaSql = null,
+                            Extension = null,
+                            ListaServidor = null,
+                            PesoLista = null,
+                            WebService = null
+                        });    
+                    }
                 }
-            }
-            return historialPlazas;
+                return historialPlazas;
+            }catch(Exception ex) { WriteLog(ex, "hola",@"C:\temporal\prueba.txt"); return NotFound();}
+            
         }
 
         [Route("Acapulco")]
