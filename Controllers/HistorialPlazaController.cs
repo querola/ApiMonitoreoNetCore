@@ -22,7 +22,6 @@ namespace monitoreoApiNetCore.Controllers
         {
             configuration = _configuration;
         }
-
         [Route("Irapuato")]
         [HttpGet]
         public ActionResult<IEnumerable<HistorialPlaza>> GetHistorialIrapuato()
@@ -45,15 +44,14 @@ namespace monitoreoApiNetCore.Controllers
                         //WriteLog($"{tamaño}", @"C:\temporal\prueba.txt");
                         //WriteLog($"{retraso}", @"C:\temporal\prueba.txt");
                         registrosPlaza.ListaServidor = new ListaServidor(
-                            "Hol",
-                            DateTime.Now,
-                            "prueba",
-                            false
+                            ultimaLista.Name,
+                            ultimaLista.CreationTime,
+                            BytesToString(ultimaLista.Length),
+                            (ultimaLista.CreationTime < DateTime.Now.AddMinutes(-45)) ? true: false
                         );
                     }
                     else
                         registrosPlaza.ListaServidor = null;
-                    
                     //Datos listas procesadas en máquina Listas/Web Service
                     if(new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasIp").Value, 1000).Status == IPStatus.Success){
                         using (var listasContext = new HistorialDbContext(new DbContextOptionsBuilder<HistorialDbContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("ListasSQlConnection").Value).Options)){
@@ -66,13 +64,12 @@ namespace monitoreoApiNetCore.Controllers
                             );
                         }
                         using(var webServiceContext = new pn_importacion_wsIndraContext(new DbContextOptionsBuilder<pn_importacion_wsIndraContext>().UseSqlServer(configuration.GetSection($"{datosPlaza.Path}").GetSection("WebServiceConnection").Value).Options)){
-                            var historial = webServiceContext.pn_importacion_wsIndra.FirstOrDefault();
+                            var historial = webServiceContext.pn_importacion_wsIndra.OrderByDescending(x => x.FechaExt).FirstOrDefault();
                             registrosPlaza.WebService = new WebService(
                                 historial.FechaExt,
                                 (historial.FechaExt < DateTime.Now.AddMinutes(-45)) ? true : false
                             );
                         }
-                        
                     }
                     else
                         registrosPlaza.Lista = null;  
@@ -80,9 +77,7 @@ namespace monitoreoApiNetCore.Controllers
                 }
                 return historialPlazas;
             }catch(Exception ex) { WriteLog(ex.InnerException, "Consulta Irapuato", @"C:\temporal\prueba.txt"); return NotFound(); }
-            
         }
-
         //[Route("Acapulco")]
         //[HttpGet]
         //public ActionResult<IEnumerable<HistorialPlaza>> GetHistorialAcapulco()
@@ -141,25 +136,28 @@ namespace monitoreoApiNetCore.Controllers
         //        return historialPlazas;
         //    }catch(Exception ex) { WriteLog(ex, "Consulta Acapulco", @"C:\temporal\prueba.txt"); return NotFound(); }
         //}
-
         public FileInfo GetFileInfo(string ip, bool p)
         {   
-            if(System.Diagnostics.Debugger.IsAttached)
-                return RunAsUser(new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1"), $@"\\{ip}\geaint\PARAM\ACTUEL");
-            else
-                return RunAsUser((p) ? new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1") : new UserCredentials("WORKGROUP", "admin", "admin"), $@"\\{ip}\geaint\PARAM\ACTUEL");
+            try{
+                if(System.Diagnostics.Debugger.IsAttached)
+                    return RunAsUser(new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1"), $@"\\{ip}\geaint\PARAM\ACTUEL");
+                else
+                    return RunAsUser((p) ? new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1") : new UserCredentials("WORKGROUP", "admin", "admin"), $@"\\{ip}\geaint\PARAM\ACTUEL");
+            }catch(Exception ex) {  WriteLog(ex.InnerException, "GetFileInfo", @"C:\temporal\prueba.txt"); return null; }
+            
         }
-
         private FileInfo RunAsUser(UserCredentials credentials, string directory)
         {
-            FileInfo fileInfo = null;
-            Impersonation.RunAsUser(credentials, LogonType.Interactive, () => {
-                if(Directory.GetFiles(directory, "LSTABINT*").Length != 0)
-                    fileInfo = new FileInfo(Directory.GetFiles(directory, "LSTABINT*").FirstOrDefault());
-            });
-            return fileInfo;
+            try{
+                FileInfo fileInfo = null;
+                Impersonation.RunAsUser(credentials, LogonType.Interactive, () => {
+                    if(Directory.GetFiles(directory, "LSTABINT*").Length != 0)
+                        fileInfo = new FileInfo(Directory.GetFiles(directory, "LSTABINT*").FirstOrDefault());
+                });
+                return fileInfo;
+            }catch(Exception ex) { WriteLog(ex.InnerException, "RunasUser", @"C:\temporal\prueba.txt"); return null; }
+            
         }
-        
         public void WriteLog(Exception exception, string method, string logFile)
         {
             if(System.IO.File.Exists(logFile)){
