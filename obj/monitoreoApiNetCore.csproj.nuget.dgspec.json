@@ -1,26 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj": {}
+    "C:\\Users\\ramr1\\Documents\\GitHub\\ApiMonitoreoNetCore\\monitoreoApiNetCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj": {
+    "C:\\Users\\ramr1\\Documents\\GitHub\\ApiMonitoreoNetCore\\monitoreoApiNetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj",
+        "projectUniqueName": "C:\\Users\\ramr1\\Documents\\GitHub\\ApiMonitoreoNetCore\\monitoreoApiNetCore.csproj",
         "projectName": "monitoreoApiNetCore",
-        "projectPath": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\monitoreoApiNetCore.csproj",
-        "packagesPath": "C:\\Users\\axelf\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\axelf\\Documents\\Proyectos\\Monitoreo\\obj\\",
+        "projectPath": "C:\\Users\\ramr1\\Documents\\GitHub\\ApiMonitoreoNetCore\\monitoreoApiNetCore.csproj",
+        "packagesPath": "C:\\Users\\ramr1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ramr1\\Documents\\GitHub\\ApiMonitoreoNetCore\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\axelf\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\ramr1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -31,6 +26,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -42,6 +38,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
@@ -70,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
