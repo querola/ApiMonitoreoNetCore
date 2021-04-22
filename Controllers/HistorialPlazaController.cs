@@ -36,13 +36,13 @@ namespace monitoreoApiNetCore.Controllers
                     //Datos LSTABINT en servidor 
                     if (new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("ServidorIp").Value, 1000).Status == IPStatus.Success)
                     {
-                        FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("ServidorIp").Value, true);
-                        registrosPlaza.ListaServidor = new ListaServidor(
-                            ultimaLista.Name,
-                            ultimaLista.CreationTime,
-                            BytesToString(ultimaLista.Length),
-                            (ultimaLista.CreationTime < DateTime.Now.AddMinutes(-45)) ? true : false
-                        );
+                        //FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("ServidorIp").Value, true);
+                        //registrosPlaza.ListaServidor = new ListaServidor(
+                        //    ultimaLista.Name,
+                        //    ultimaLista.CreationTime,
+                        //    BytesToString(ultimaLista.Length),
+                        //    (ultimaLista.CreationTime < DateTime.Now.AddMinutes(-45)) ? true : false
+                        //);
                     }
                     else
                         registrosPlaza.ListaServidor = null;
@@ -111,13 +111,13 @@ namespace monitoreoApiNetCore.Controllers
                     //Datos LSTABINT en servidor 
                     if (new Ping().Send(configuration.GetSection($"{datosPlaza.Path}").GetSection("ServidorIp").Value, 1000).Status == IPStatus.Success)
                     {
-                        FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("ServidorIp").Value, false);
-                        registrosPlaza.ListaServidor = new ListaServidor(
-                            ultimaLista.Name,
-                            ultimaLista.CreationTime,
-                            BytesToString(ultimaLista.Length),
-                            (ultimaLista.CreationTime < DateTime.Now.AddMinutes(-45)) ? true : false
-                        );
+                        //FileInfo ultimaLista = GetFileInfo(configuration.GetSection($"{datosPlaza.Path}").GetSection("ServidorIp").Value, false);
+                        //registrosPlaza.ListaServidor = new ListaServidor(
+                        //    ultimaLista.Name,
+                        //    ultimaLista.CreationTime,
+                        //    BytesToString(ultimaLista.Length),
+                        //    (ultimaLista.CreationTime < DateTime.Now.AddMinutes(-45)) ? true : false
+                        //);
                     }
                     else
                         registrosPlaza.ListaServidor = null;
@@ -171,25 +171,26 @@ namespace monitoreoApiNetCore.Controllers
                 //WriteLog(ex.InnerException, "Consulta Irapuato", @"C:\temporal\prueba.txt"); 
             }
         }
-        public FileInfo GetFileInfo(string ip, bool p)
-        {
-            if (System.Diagnostics.Debugger.IsAttached)
-                return RunAsUser(new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1"), $@"\\{ip}\geaint\PARAM\ACTUEL");
-            else
-                return RunAsUser((p) ? new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1") : new UserCredentials("WORKGROUP", "admin", "admin"), $@"\\{ip}\geaint\PARAM\ACTUEL");
+        //public FileInfo GetFileInfo(string ip, bool p)
+        //{
+        //    if (System.Diagnostics.Debugger.IsAttached)
+        //        return RunAsUser(new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1"), $@"\\{ip}\geaint\PARAM\ACTUEL");
+        //    else
+        //        return RunAsUser((p) ? new UserCredentials("WORKGROUP", "GEAINT", "G3jRm5f1") : new UserCredentials("WORKGROUP", "admin", "admin"), $@"\\{ip}\geaint\PARAM\ACTUEL");
 
-        }
-        private FileInfo RunAsUser(UserCredentials credentials, string directory)
-        {
-            FileInfo fileInfo = null;
-            Impersonation.RunAsUser(credentials, LogonType.Interactive, () =>
-            {
-                if (Directory.GetFiles(directory, "LSTABINT*").Length != 0)
-                    fileInfo = new FileInfo(Directory.GetFiles(directory, "LSTABINT*").FirstOrDefault());
-            });
-            return fileInfo;
+        //}
+        //private FileInfo RunAsUser(UserCredentials credentials, string directory)
+        //{
+        //    FileInfo fileInfo = null;
+        //    Impersonation.RunAsUser(credentials, LogonType.Interactive, () =>
+        //    {
+        //        if (Directory.GetFiles(directory, "LSTABINT*").Length != 0)
+        //            fileInfo = new FileInfo(Directory.GetFiles(directory, "LSTABINT*").FirstOrDefault());
+        //    });
+        //    return fileInfo;
 
-        }
+        //}
+       
         public void WriteLog(Exception exception, string method, string logFile)
         {
             if (System.IO.File.Exists(logFile))
